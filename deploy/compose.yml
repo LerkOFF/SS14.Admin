@@ -1,0 +1,45 @@
+services:
+  ss14-admin:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: starhorizon/ss14-admin:1.8.0-horizon
+    container_name: ss14-admin
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    volumes:
+      - ss14_admin_keys:/home/app/.aspnet/DataProtection-Keys
+    ports:
+      - "127.0.0.1:27689:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      urls: http://0.0.0.0:8080/
+      AllowedHosts: admin.starhorizon.ru
+      ForwardProxies__0: 172.16.0.0/12
+      ConnectionStrings__DefaultConnection: Server=ss14-database;Port=5432;Database=ss14;User Id=${SS14_ADMIN_DB_USER};Password=${SS14_ADMIN_DB_PASSWORD}
+      Auth__Authority: https://account.spacestation14.com/
+      Auth__ClientId: ${SS14_ADMIN_OAUTH_CLIENT_ID}
+      Auth__ClientSecret: ${SS14_ADMIN_OAUTH_CLIENT_SECRET}
+      AuthServer: https://auth.spacestation14.com
+    networks:
+      - ss14_prod
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /healthz HTTP/1.1\r\nHost: localhost\r\nX-Forwarded-Proto: https\r\nConnection: close\r\n\r\n' >&3 && grep -q 'ok' <&3"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    mem_limit: 512m
+    cpus: 0.75
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  ss14_prod:
+    external: true
+    name: prod_default
+
+volumes:
+  ss14_admin_keys:

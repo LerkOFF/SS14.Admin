@@ -122,6 +122,11 @@ namespace SS14.Admin
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/healthz", async context =>
+                {
+                    context.Response.ContentType = "text/plain";
+                    await context.Response.WriteAsync("ok");
+                });
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
