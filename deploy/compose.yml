@@ -19,6 +19,8 @@ services:
       AllowedHosts: admin.xn--14-nmca.xn--p1ai
       # Docker gateway used by the host-side Nginx connection to the published port.
       ForwardProxies__0: ${SS14_ADMIN_FORWARD_PROXY:-172.23.0.1}
+      # Kestrel can expose the same IPv4 peer as an IPv4-mapped IPv6 address.
+      ForwardProxies__1: ::ffff:${SS14_ADMIN_FORWARD_PROXY:-172.23.0.1}
       ConnectionStrings__DefaultConnection: Server=ss14-database;Port=5432;Database=ss14;User Id=${SS14_ADMIN_DB_USER};Password=${SS14_ADMIN_DB_PASSWORD}
       Auth__Authority: https://account.spacestation14.com/
       Auth__ClientId: ${SS14_ADMIN_OAUTH_CLIENT_ID}

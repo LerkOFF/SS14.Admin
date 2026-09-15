@@ -20,7 +20,7 @@
 - Секреты находятся только в `deploy/.env` на сервере. Файл не коммитится.
 - Ключи ASP.NET Data Protection сохраняются в Docker volume `ss14_admin_keys`; без него OAuth-сессии перестанут расшифровываться после пересоздания контейнера.
 - OAuth callback: `https://admin.xn--14-nmca.xn--p1ai/signin-oidc` (ASCII/punycode-форма адреса, необходимая для точного сопоставления `redirect_uri`).
-- `SS14_ADMIN_FORWARD_PROXY` должен содержать адрес gateway внешней Docker-сети (`docker network inspect ss14_default`). Иначе OAuth сформирует callback с `http://`.
+- `SS14_ADMIN_FORWARD_PROXY` должен содержать адрес gateway внешней Docker-сети (`docker network inspect ss14_default`). Compose доверяет его IPv4- и IPv4-mapped IPv6-представлению; иначе OAuth сформирует callback с `http://`.
 
 ## Подготовка
 
