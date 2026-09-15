@@ -101,7 +101,11 @@ namespace SS14.Admin
 
             foreach (var ip in Configuration.GetSection("ForwardProxies").Get<string[]>() ?? Array.Empty<string>())
             {
-                forwardedHeadersOptions.KnownProxies.Add(IPAddress.Parse(ip));
+                var address = IPAddress.Parse(ip);
+                forwardedHeadersOptions.KnownProxies.Add(address);
+                forwardedHeadersOptions.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(
+                    address,
+                    address.GetAddressBytes().Length * 8));
             }
 
             app.UseForwardedHeaders(forwardedHeadersOptions);
