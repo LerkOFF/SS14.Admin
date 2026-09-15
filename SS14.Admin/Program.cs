@@ -17,6 +17,9 @@ namespace SS14.Admin
                     builder.AddYamlFile("appsettings.yml", false, true);
                     builder.AddYamlFile($"appsettings.{env.EnvironmentName}.yml", true, true);
                     builder.AddYamlFile("appsettings.Secret.yml", true, true);
+                    // Deployment configuration must override repository defaults.
+                    builder.AddEnvironmentVariables();
+                    builder.AddCommandLine(args);
                 })
                 .UseSerilog((ctx, cfg) =>
                 {
