@@ -20,6 +20,7 @@
 - Секреты находятся только в `deploy/.env` на сервере. Файл не коммитится.
 - Ключи ASP.NET Data Protection сохраняются в Docker volume `ss14_admin_keys`; без него OAuth-сессии перестанут расшифровываться после пересоздания контейнера.
 - OAuth callback: `https://admin.xn--14-nmca.xn--p1ai/signin-oidc` (ASCII/punycode-форма адреса, необходимая для точного сопоставления `redirect_uri`).
+- `SS14_ADMIN_FORWARD_PROXY` должен содержать адрес gateway внешней Docker-сети (`docker network inspect ss14_default`). Иначе OAuth сформирует callback с `http://`.
 
 ## Подготовка
 
@@ -42,7 +43,16 @@ docker compose --env-file deploy/.env -f deploy/compose.yml build
 docker compose --env-file deploy/.env -f deploy/compose.yml up -d
 ```
 
-Nginx-конфигурация находится в `deploy/nginx.conf.example`. После её установки выпустить сертификат штатным Certbot и проверить конфигурацию до reload.
+Nginx-конфигурация находится в `deploy/nginx.conf.example`. Сначала установить HTTP-блок с ACME webroot, затем выпустить сертификат и установить полный TLS-конфиг:
+
+```bash
+install -d -m 0755 /var/www/letsencrypt/.well-known/acme-challenge
+certbot certonly --webroot -w /var/www/letsencrypt \
+  -d admin.xn--14-nmca.xn--p1ai --non-interactive --agree-tos
+nginx -t && systemctl reload nginx
+```
+
+Сертификат обновляется системным таймером Certbot; ACME location в HTTP-блоке нужно сохранить.
 
 ## Проверка
 
@@ -50,7 +60,11 @@ Nginx-конфигурация находится в `deploy/nginx.conf.example`
 docker compose --env-file deploy/.env -f deploy/compose.yml ps
 docker compose --env-file deploy/.env -f deploy/compose.yml logs --since 5m ss14-admin
 curl -fsS http://127.0.0.1:27689/healthz
+curl -fsS https://admin.xn--14-nmca.xn--p1ai/healthz
+curl -sS -D - -o /dev/null https://admin.xn--14-nmca.xn--p1ai/Login
 ```
+
+В заголовке `Location` последней команды `redirect_uri` должен быть равен `https://admin.xn--14-nmca.xn--p1ai/signin-oidc`.
 
 После OAuth-входа проверить под тестовым администратором:
 
