@@ -19,12 +19,12 @@
 - OAuth выполняется через официальный аккаунт Space Station 14.
 - Секреты находятся только в `deploy/.env` на сервере. Файл не коммитится.
 - Ключи ASP.NET Data Protection сохраняются в Docker volume `ss14_admin_keys`; без него OAuth-сессии перестанут расшифровываться после пересоздания контейнера.
-- OAuth callback: `https://admin.сс14.рф/signin-oidc`.
+- OAuth callback: `https://admin.xn--14-nmca.xn--p1ai/signin-oidc` (ASCII/punycode-форма адреса, необходимая для точного сопоставления `redirect_uri`).
 
 ## Подготовка
 
 1. Создать DNS A/AAAA-запись `admin.сс14.рф` на production-хост.
-2. Зарегистрировать OAuth-приложение с указанным callback и homepage `https://admin.сс14.рф`.
+2. Зарегистрировать OAuth-приложение с указанным callback и homepage `https://admin.xn--14-nmca.xn--p1ai`.
 3. Сделать резервную копию базы.
 4. Создать отдельную роль PostgreSQL и выдать только необходимые права на базу `ss14`.
 5. Скопировать `deploy/.env.example` в `deploy/.env` и заполнить секреты.
