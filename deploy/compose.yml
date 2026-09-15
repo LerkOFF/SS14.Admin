@@ -39,7 +39,7 @@ services:
 networks:
   ss14_prod:
     external: true
-    name: prod_default
+    name: ss14_default
 
 volumes:
   ss14_admin_keys:
