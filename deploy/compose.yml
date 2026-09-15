@@ -16,7 +16,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       urls: http://0.0.0.0:8080/
-      AllowedHosts: admin.starhorizon.ru
+      AllowedHosts: admin.xn--14-nmca.xn--p1ai
       ForwardProxies__0: 172.16.0.0/12
       ConnectionStrings__DefaultConnection: Server=ss14-database;Port=5432;Database=ss14;User Id=${SS14_ADMIN_DB_USER};Password=${SS14_ADMIN_DB_PASSWORD}
       Auth__Authority: https://account.spacestation14.com/
