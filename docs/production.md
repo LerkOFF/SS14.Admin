@@ -66,6 +66,8 @@ curl -sS -D - -o /dev/null https://admin.xn--14-nmca.xn--p1ai/Login
 
 В заголовке `Location` последней команды `redirect_uri` должен быть равен `https://admin.xn--14-nmca.xn--p1ai/signin-oidc`.
 
+Если callback возвращает Nginx `502` с `upstream sent too big header`, сохранить из `deploy/nginx.conf.example` увеличенные `proxy_buffer_size`, `proxy_buffers` и `proxy_busy_buffers_size`: OAuth устанавливает крупные cookie-заголовки.
+
 После OAuth-входа проверить под тестовым администратором:
 
 1. Просмотр списка игроков, подключений и персонажей.
